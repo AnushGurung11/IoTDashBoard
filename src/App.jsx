@@ -4,9 +4,11 @@ import CurrentData from './components/CurrentData';
 
 function App() {
     return (
-        <NavBar />
-        <CurrentData />
-    )
+        <>
+            <NavBar />
+            <CurrentData />
+        </>
+            )
 }
 
 export default App
