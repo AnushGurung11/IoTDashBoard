@@ -15,7 +15,8 @@
 
 // export default Navbar;
 
-import { Droplets, Home, Database } from "lucide-react";
+import { Home, Database } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   return (
@@ -46,13 +47,17 @@ const Navbar = () => {
             <li>
               <button className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 hover:text-black transition-all duration-200 text-blue-50">
                 <Home size={18} />
-                <span className="font-medium">Home</span>
+                <span className="font-medium">
+                  <Link to="/">Home</Link>
+                </span>
               </button>
             </li>
             <li>
               <button className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-white hover:bg-opacity-20 hover:text-black transition-all duration-200 text-blue-50">
                 <Database size={18} />
-                <span className="font-medium">All Records</span>
+                <span className="font-medium">
+                  <Link to="/allrecords">All Records</Link>
+                </span>
               </button>
             </li>
           </ul>

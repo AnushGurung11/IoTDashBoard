@@ -1,33 +1,3 @@
-// import React, { useState, useEffect } from 'react'
-
-// const CurrentData = () => {
-//     const [data, setData] = useState(null); 
-
-//     useEffect(() => {
-//         fetch('http://localhost:4000/api/currentdata')
-//             .then(response => response.json())
-//             .then(data => setData(data))
-//             .catch(error => console.error('Error fetching data:', error));
-//     }, []);
-//   return (
-//     <div>
-//         {data ? (
-//             <div className="p-6 bg-white rounded shadow-md">
-//                 <h2 className="text-2xl font-bold mb-4">Current Water Level Data</h2>
-//                 <p>Water Level: {data.waterLevel}cm</p>
-//                 <p>Bridge status: {data.servoStatus === 'OFF' ? 'Open' : 'Closed'}</p>
-//             </div>
-//         ) : (
-//             <p>Loading...</p>
-//         )}
-//     </div>
-//   )
-// }
-
-// export default CurrentData
-
-
-
 import React, { useState, useEffect } from 'react';
 import { Droplets, Clock, AlertCircle, Waves } from 'lucide-react';
 
@@ -90,9 +60,19 @@ const CurrentData = () => {
         );
     }
 
-    const waterLevelPercentage = Math.min((data.waterLevel / 100) * 100, 100);
-    const isHighWater = data.waterLevel > 70;
     const isBridgeOpen = data.servoStatus === 'OFF';
+    
+    const getFloodStatus = () => {
+        if (data.waterLevel < 80) {
+            return { level: 'Safe', color: 'from-green-500 to-green-600', badge: 'bg-green-500', text: 'Safe - No flood risk' };
+        } else if (data.waterLevel >= 80 && data.waterLevel <= 90) {
+            return { level: 'Moderate Risk', color: 'from-yellow-500 to-orange-500', badge: 'bg-yellow-500', text: 'Moderate risk of flood' };
+        } else {
+            return { level: 'Danger', color: 'from-red-500 to-red-600', badge: 'bg-red-500', text: 'High risk of flood - Danger' };
+        }
+    };
+    
+    const floodStatus = getFloodStatus();
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 flex items-center justify-center p-4">
@@ -103,29 +83,19 @@ const CurrentData = () => {
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
-                    <div className="p-8 bg-gradient-to-br from-blue-500 to-cyan-600 text-white">
+                    <div className={`p-8 bg-gradient-to-br ${floodStatus.color} text-white`}>
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center space-x-3">
                                 <Droplets size={32} />
                                 <h2 className="text-2xl font-bold">Water Level</h2>
                             </div>
-                            <div className={`px-4 py-2 rounded-full text-sm font-semibold ${
-                                isHighWater ? 'bg-red-500' : 'bg-green-500'
-                            }`}>
-                                {isHighWater ? 'High' : 'Normal'}
+                            <div className={`px-4 py-2 rounded-full text-sm font-semibold ${floodStatus.badge}`}>
+                                {floodStatus.level}
                             </div>
                         </div>
                         
-                        <div className="text-6xl font-bold mb-4">{data.waterLevel}<span className="text-3xl">cm</span></div>
-                        
-                        <div className="bg-white bg-opacity-20 rounded-full h-4 overflow-hidden">
-                            <div 
-                                className={`h-full rounded-full transition-all duration-500 ${
-                                    isHighWater ? 'bg-red-400' : 'bg-green-400'
-                                }`}
-                                style={{ width: `${waterLevelPercentage}%` }}
-                            ></div>
-                        </div>
+                        <div className="text-6xl font-bold mb-2">{data.waterLevel}<span className="text-3xl">cm</span></div>
+                        <p className="text-lg text-white text-opacity-90">{floodStatus.text}</p>
                     </div>
 
                     <div className="p-8 border-b border-gray-200">
@@ -150,7 +120,7 @@ const CurrentData = () => {
                     <div className="p-6 bg-gray-50">
                         <div className="flex items-center justify-center space-x-2 text-gray-600">
                             <Clock size={18} />
-                            <span className="text-sm">Last updated: {new Date(data.timestamp).toLocaleString()}</span>
+                            <span className="text-sm">Last updated: {new Date(data.createdAt).toLocaleString()}</span>
                         </div>
                     </div>
                 </div>
@@ -158,9 +128,9 @@ const CurrentData = () => {
                 <div className="grid grid-cols-2 gap-4">
                     <div className="bg-white rounded-xl shadow-md p-4 text-center">
                         <div className={`w-4 h-4 rounded-full mx-auto mb-2 ${
-                            isHighWater ? 'bg-red-500 animate-pulse' : 'bg-green-500'
+                            data.waterLevel < 80 ? 'bg-green-500' : data.waterLevel <= 90 ? 'bg-yellow-500 animate-pulse' : 'bg-red-500 animate-pulse'
                         }`}></div>
-                        <p className="text-sm text-gray-600">Water Alert</p>
+                        <p className="text-sm text-gray-600">Flood Alert</p>
                     </div>
                     <div className="bg-white rounded-xl shadow-md p-4 text-center">
                         <div className={`w-4 h-4 rounded-full mx-auto mb-2 ${

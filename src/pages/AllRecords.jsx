@@ -1,14 +1,14 @@
 import React from 'react'
 import Navbar from '../components/NavBar'
-import CurrentData from '../components/CurrentData'
+import Chart from '../components/Chart'
 
-const HomePage = () => {
+const AllRecords = () => {
   return (
     <div>
         <Navbar/>
-        <CurrentData/>
+        <Chart/>
     </div>
   )
 }
 
-export default HomePage
+export default AllRecords
